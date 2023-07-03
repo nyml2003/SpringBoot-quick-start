@@ -1,31 +1,47 @@
 package com.example.back.Controller;
 import com.example.back.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.back.Entity.Response;
 
+
+import java.util.Map;
 @RestController
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/findAllUsers")
-    public Response findAllUsers() {
-        Response response = new Response();
-        response.setCode(200);
-        response.setMsg("success");
-        response.setData(userService.findAllUsers());
-        return response;
+    @PostMapping("/login")
+    public Map<String,Object> login(@RequestBody Map<String, String> data) {
+        String nickname = data.get("nickname");
+        String password = data.get("password");
+
+        return userService.login(nickname, password);
     }
 
-    @GetMapping("/test")
-    public Response test() {
-        Response response = new Response();
-        response.setCode(200);
-        response.setMsg("success");
-        response.setData("test");
-        return response;
+    @PostMapping("/register")
+    public Map<String,Object> register(@RequestBody Map<String, String> data) {
+        String nickname = data.get("nickname");
+        String password = data.get("password");
+        return userService.register(nickname, password);
     }
+
+    @PostMapping("/insertHistory")
+    public Map<String,Object> insertHistory(@RequestBody Map<String, String> data) {
+        int level = Integer.parseInt(data.get("level"));
+        int time = Integer.parseInt(data.get("time"));
+        int money = Integer.parseInt(data.get("money"));
+        int user_id = Integer.parseInt(data.get("user_id"));
+        boolean is_game_over = Boolean.parseBoolean(data.get("is_game_over"));
+        return userService.insertHistory(level,time,money,user_id,is_game_over);
+    }
+
+    @PostMapping("/getHistory")
+    public Map<String,Object> getHistoryByUserId(@RequestBody Map<String, String> data) {
+        int user_id = Integer.parseInt(data.get("user_id"));
+        return userService.getHistoryByUserId(user_id);
+    }
+
 
 }
